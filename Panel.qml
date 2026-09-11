@@ -324,7 +324,7 @@ Panel {
           anchors.centerIn: parent
           iconSize: Style.space(16)
           color: root.barIconColor
-          eyeColor: root.holeColor
+          eyeColor: "#ffffff"
           lookX: cluster.pointerLook.x
           lookY: cluster.pointerLook.y
           lively: inbox.lively
