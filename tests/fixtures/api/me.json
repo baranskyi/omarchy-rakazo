@@ -1,0 +1,14 @@
+{
+  "userId": "cmf3user0001test0000abcd",
+  "email": "test@example.com",
+  "name": "Rakazo Test",
+  "spaceId": "cmf3space001test0000abcd",
+  "isDeploymentOwner": true,
+  "needsModel": false,
+  "defaultProvider": "openrouter",
+  "defaultModel": "test-model",
+  "computerHost": "docker",
+  "canChooseHostComputer": false,
+  "sandboxProvider": "docker",
+  "avatarStyle": "organic"
+}

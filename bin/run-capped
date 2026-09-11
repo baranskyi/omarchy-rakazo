@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+# Bound stdout/stderr and the whole process tree before QML collects them.
+# StdioCollector has no size limit of its own. `head` pipes are not enough:
+# the producer runs in a new session and is reaped with TERM then KILL.
+set -u
+
+limit=${RAKAZO_BOTS_MAX_BYTES:-262144}
+seconds=${RAKAZO_BOTS_MAX_SECONDS:-30}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --max-bytes)
+      limit=$2
+      shift 2
+      ;;
+    --max-seconds)
+      seconds=$2
+      shift 2
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+if [ $# -eq 0 ]; then
+  echo "usage: run-capped [--max-bytes N] [--max-seconds N] COMMAND [ARG...]" >&2
+  exit 2
+fi
+
+exec python3 - "$limit" "$seconds" "$@" <<'PY'
+import os
+import select
+import signal
+import subprocess
+import sys
+import time
+
+limit = int(sys.argv[1])
+seconds = float(sys.argv[2])
+cmd = sys.argv[3:]
+if not cmd or limit < 1 or seconds <= 0:
+    sys.exit(2)
+
+
+def kill_tree(proc) -> None:
+    try:
+        os.killpg(proc.pid, signal.SIGTERM)
+    except OSError:
+        try:
+            proc.send_signal(signal.SIGTERM)
+        except OSError:
+            pass
+    try:
+        proc.wait(timeout=0.2)
+        return
+    except subprocess.TimeoutExpired:
+        pass
+    try:
+        os.killpg(proc.pid, signal.SIGKILL)
+    except OSError:
+        try:
+            proc.kill()
+        except OSError:
+            pass
+    try:
+        proc.wait(timeout=1)
+    except subprocess.TimeoutExpired:
+        pass
+
+
+try:
+    proc = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        stdin=subprocess.DEVNULL,
+        bufsize=0,
+        start_new_session=True,
+        close_fds=True,
+    )
+except OSError as exc:
+    sys.stderr.write(str(exc) + "\n")
+    sys.exit(1)
+
+streams = {}
+counts = {}
+if proc.stdout:
+    streams[proc.stdout] = 1
+    counts[proc.stdout] = 0
+if proc.stderr:
+    streams[proc.stderr] = 2
+    counts[proc.stderr] = 0
+
+overflow = False
+deadline = time.monotonic() + seconds
+try:
+    while streams:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            break
+        ready, _, _ = select.select(list(streams), [], [], remaining)
+        if not ready:
+            break
+        stop = False
+        for fh in ready:
+            try:
+                chunk = os.read(fh.fileno(), 4096)
+            except OSError:
+                chunk = b""
+            if not chunk:
+                streams.pop(fh, None)
+                try:
+                    fh.close()
+                except OSError:
+                    pass
+                continue
+            used = counts[fh]
+            room = limit - used
+            if room <= 0:
+                overflow = True
+                stop = True
+                break
+            if len(chunk) > room:
+                os.write(streams[fh], chunk[:room])
+                counts[fh] = limit
+                overflow = True
+                stop = True
+                break
+            os.write(streams[fh], chunk)
+            counts[fh] = used + len(chunk)
+        if stop:
+            break
+finally:
+    if proc.poll() is None:
+        kill_tree(proc)
+    for fh in (proc.stdout, proc.stderr):
+        if fh and not fh.closed:
+            try:
+                fh.close()
+            except OSError:
+                pass
+
+code = proc.returncode if proc.returncode is not None else 1
+if overflow and code == 0:
+    code = 1
+sys.exit(code)
+PY

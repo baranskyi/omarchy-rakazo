@@ -1,0 +1,80 @@
+{
+  "threadId": "cmf3thread01test0000abcd",
+  "cursor": 42,
+  "olderCursor": null,
+  "botId": "cmf3k9x2q0001bot7h2k4d8s",
+  "messages": [
+    {
+      "id": "msg-0001",
+      "threadId": "cmf3thread01test0000abcd",
+      "seq": 1,
+      "role": "system",
+      "blocks": [{ "kind": "meta", "text": "Scout joined the space" }],
+      "createdAt": "2026-09-10T17:50:00.000Z"
+    },
+    {
+      "id": "msg-0002",
+      "threadId": "cmf3thread01test0000abcd",
+      "seq": 2,
+      "role": "user",
+      "blocks": [{ "kind": "text", "text": "Find three reviews of the new keyboard." }],
+      "createdAt": "2026-09-10T17:55:00.000Z"
+    },
+    {
+      "id": "msg-0003",
+      "threadId": "cmf3thread01test0000abcd",
+      "seq": 3,
+      "role": "bot",
+      "botId": "cmf3k9x2q0001bot7h2k4d8s",
+      "runId": "cmf3run00001test0000abcd",
+      "blocks": [
+        { "kind": "text", "text": "On it.\nI'll check\tthree sources." },
+        { "kind": "image", "artifactId": "cmf3art00001test0000abcd", "mimeType": "image/png", "name": "screenshot.png" }
+      ],
+      "createdAt": "2026-09-10T17:56:00.000Z"
+    },
+    {
+      "id": "msg-0004",
+      "threadId": "cmf3thread01test0000abcd",
+      "seq": 4,
+      "role": "bot",
+      "botId": "cmf3k9x2q0001bot7h2k4d8s",
+      "runId": "cmf3run00001test0000abcd",
+      "blocks": [{ "kind": "text", "text": "The first review is long. It praises the switches, the case, the software, the battery, the price, the keycaps, the stabilizers, the sound dampening, and the cable, and then it keeps going for a while." }],
+      "createdAt": "2026-09-10T17:58:00.000Z"
+    },
+    {
+      "id": "progress:cmf3run00001test0000abcd",
+      "threadId": "cmf3thread01test0000abcd",
+      "seq": 5,
+      "role": "bot",
+      "botId": "cmf3k9x2q0001bot7h2k4d8s",
+      "runId": "cmf3run00001test0000abcd",
+      "blocks": [{ "kind": "progress", "text": "Opening the browser on the computer…", "activity": true }],
+      "createdAt": "2026-09-10T17:59:30.000Z"
+    }
+  ],
+  "run": {
+    "id": "cmf3run00001test0000abcd",
+    "botId": "cmf3k9x2q0001bot7h2k4d8s",
+    "threadId": "cmf3thread01test0000abcd",
+    "taskId": "cmf3task0001test0000abcd",
+    "status": "running",
+    "trigger": "user",
+    "routineId": null,
+    "modelProvider": null,
+    "modelId": null,
+    "error": null,
+    "startedAt": "2026-09-10T17:55:01.000Z",
+    "completedAt": null,
+    "createdAt": "2026-09-10T17:55:00.000Z"
+  },
+  "computer": {
+    "state": "running",
+    "mode": "team",
+    "kind": "docker",
+    "controlHolder": null,
+    "busyBotName": null,
+    "screenAvailable": true
+  }
+}

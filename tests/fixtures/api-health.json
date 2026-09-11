@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "runtime": "pi",
+  "sandbox": "docker",
+  "composio": false,
+  "pipedream": false,
+  "messaging": false,
+  "email": null,
+  "jobs": "graphile",
+  "realtime": "postgres",
+  "revision": "ef63e354e7aad68cd8217e5cf1e22cb21ec14e3b"
+}

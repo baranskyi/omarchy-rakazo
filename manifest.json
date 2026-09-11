@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "m0sthatedman.rakazo",
+  "name": "Rakazo Bots",
+  "version": "0.1.0",
+  "author": "m0sthatedman",
+  "license": "MIT",
+  "description": "Omarchy bar roster for a self-hosted Rakazo: the same bot faces as in the app, unread and waiting-on-you, a live trail of the last messages, stack status, sign-in, and edge image updates.",
+  "kinds": ["bar-widget"],
+  "activation": "on-demand",
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "Rakazo Bots",
+    "description": "Bar cluster of Rakazo bot faces, an inbox roster with a live message trail, and the Rakazo launcher.",
+    "category": "AI",
+    "aliases": ["rakazo", "rakazo-bots", "rakazo-inbox"],
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "defaults": {
+      "refreshIntervalSec": 10,
+      "webUrl": "http://127.0.0.1:5173",
+      "stackDir": "~/rakazo"
+    },
+    "schema": [
+      {
+        "key": "refreshIntervalSec",
+        "type": "integer",
+        "label": "Refresh interval (seconds)",
+        "min": 3,
+        "max": 3600,
+        "step": 1,
+        "defaultValue": 10
+      },
+      {
+        "key": "webUrl",
+        "type": "string",
+        "label": "Rakazo URL",
+        "defaultValue": "http://127.0.0.1:5173",
+        "description": "Where the Rakazo web UI answers. Plain http is accepted only for loopback and private addresses."
+      },
+      {
+        "key": "stackDir",
+        "type": "path",
+        "label": "Stack folder",
+        "defaultValue": "~/rakazo",
+        "description": "Folder with docker-compose.images.yml and install-images.sh. Used to start and update a local stack."
+      }
+    ]
+  }
+}
