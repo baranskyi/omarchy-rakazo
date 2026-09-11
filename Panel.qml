@@ -300,17 +300,33 @@ Panel {
       height: Style.space(22)
 
       readonly property bool expanded: clusterHover.hovered
+      readonly property point pointerLook: {
+        if (!clusterHover.hovered) return Qt.point(0, 0)
+        var pointer = clusterHover.point.position
+        var hubCenterX = cluster.x + hubSlot.x + hubMark.x + hubMark.width / 2
+        var hubCenterY = cluster.y + hubSlot.y + hubMark.y + hubMark.height / 2
+        var dx = pointer.x - hubCenterX
+        var dy = pointer.y - hubCenterY
+        var distance = Math.sqrt(dx * dx + dy * dy)
+        if (distance < 0.01) return Qt.point(0, 0)
+        var strength = Math.min(1, distance / Math.max(1, Style.space(14)))
+        return Qt.point(dx / distance * strength, dy / distance * strength)
+      }
 
       Item {
+        id: hubSlot
         width: Style.space(18)
         height: Style.space(18)
         anchors.verticalCenter: parent.verticalCenter
 
         RakazoMark {
+          id: hubMark
           anchors.centerIn: parent
           iconSize: Style.space(16)
           color: root.barIconColor
           eyeColor: root.holeColor
+          lookX: cluster.pointerLook.x
+          lookY: cluster.pointerLook.y
           lively: inbox.lively
           alarming: rakazo.alarming
           opacity: root.reachable || inbox.hasSnapshot ? 1.0 : 0.55

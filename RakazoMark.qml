@@ -13,7 +13,8 @@ Item {
   property bool alarming: false
 
   property real blink: 0
-  property real look: 0
+  property real lookX: 0
+  property real lookY: 0
   property real bob: 0
 
   implicitWidth: iconSize
@@ -33,7 +34,8 @@ Item {
 
   Row {
     anchors.centerIn: face
-    anchors.horizontalCenterOffset: root.look * root.iconSize * 0.07
+    anchors.horizontalCenterOffset: root.lookX * root.iconSize * 0.07
+    anchors.verticalCenterOffset: root.lookY * root.iconSize * 0.06
     spacing: Math.max(1, root.iconSize * 0.1)
 
     Repeater {
@@ -64,12 +66,12 @@ Item {
     NumberAnimation { target: root; property: "blink"; to: 0; duration: 120; easing.type: Easing.OutCubic }
   }
 
-  NumberAnimation {
-    id: lookAnim
-    target: root
-    property: "look"
-    duration: 360
-    easing.type: Easing.InOutCubic
+  Behavior on lookX {
+    NumberAnimation { duration: 90; easing.type: Easing.OutCubic }
+  }
+
+  Behavior on lookY {
+    NumberAnimation { duration: 90; easing.type: Easing.OutCubic }
   }
 
   Timer {
@@ -78,12 +80,8 @@ Item {
     repeat: true
     running: !root.alarming
     onTriggered: {
-      if (Math.random() < 0.6) {
+      if (Math.random() < 0.6)
         blinkAnim.restart()
-      } else {
-        lookAnim.to = root.look === 0 ? (Math.random() < 0.5 ? -1 : 1) : 0
-        lookAnim.restart()
-      }
       interval = 2400 + Math.round(Math.random() * 3200)
     }
   }

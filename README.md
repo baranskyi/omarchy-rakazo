@@ -9,7 +9,8 @@ for Rakazo instead of the Grok Bot client. It is not an official Rakazo plugin.
 
 ## The tray
 
-- The black round face is Rakazo itself. Its bubble counts bots with unread messages.
+- The black round face is Rakazo itself. Its eyes follow the pointer while you move across the
+  widget, and its bubble counts bots with unread messages.
 - The widget stays collapsed to that one hub face. Hover it to roll out up to **eight** colored bots;
   move the pointer away and they fold back in. Bots that are waiting on you come first, then working,
   then unread.
